@@ -270,6 +270,8 @@ func (h DeleteHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return errors.Wrapf(badRequestResponse(w), "convert id query param to int: %v", err)
 	}
+	// TODO:
+	// check if permission error from abillity
 
 	if err := h.Deleter.Delete(r.Context(), id); err != nil {
 		return errors.Wrap(internalServerErrorResponse(w), "delete")

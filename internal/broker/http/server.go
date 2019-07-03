@@ -16,6 +16,7 @@ import (
 	"github.com/dipress/blog/internal/update"
 	"github.com/dipress/blog/internal/validation"
 	authEng "github.com/dipress/blog/kit/auth"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -91,9 +92,14 @@ func NewServer(addr string, db *sql.DB, authenticator *authEng.Authenticator) *h
 	mux.HandleFunc("/posts", httpHandler{
 		Handler: &listHandler,
 	}.ServeHTTP).Methods("GET")
+
+	allowedHeaders := handlers.AllowedHeaders([]string{"Content-Type", "Authorization"})
+	allowedMethods := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE"})
+	allowedOrigins := handlers.AllowedOrigins([]string{"*"})
+
 	s := http.Server{
 		Addr:         addr,
-		Handler:      mux,
+		Handler:      handlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(mux),
 		ReadTimeout:  timeout,
 		WriteTimeout: timeout,
 	}

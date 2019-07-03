@@ -116,7 +116,7 @@ func (r *Repository) ListPost(ctx context.Context, pos *post.Posts) error {
 
 	for rows.Next() {
 		var post post.Post
-		if err := rows.StructScan(&post); err != nil {
+		if err := rows.Scan(&post.ID, &post.UserID, &post.Title, &post.Body, &post.CreatedAt, &post.UpdatedAt); err != nil {
 			errors.Wrap(err, "query row scan on loop")
 		}
 		posts = append(posts, post)
